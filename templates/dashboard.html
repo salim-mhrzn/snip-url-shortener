@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — Snip{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">Dashboard</div>
+    <a href="{% url 'create_url' %}" class="btn btn-primary">+ New Short URL</a>
+</div>
+
+<div class="stat-grid">
+    <div class="stat-card">
+        <div class="stat-value">{{ total_urls }}</div>
+        <div class="stat-label">Total URLs</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ total_clicks }}</div>
+        <div class="stat-label">Total Clicks</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-value">{{ recent_clicks }}</div>
+        <div class="stat-label">Clicks (7 days)</div>
+    </div>
+</div>
+
+<div class="card">
+    {% if urls %}
+    <div style="overflow-x:auto;">
+    <table>
+        <thead>
+            <tr>
+                <th>Short Key</th>
+                <th>Original URL</th>
+                <th>Title</th>
+                <th>Clicks</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for url in urls %}
+        <tr>
+            <td><a href="{% url 'url_detail' url.pk %}" class="short-key">{{ url.short_key }}</a></td>
+            <td class="url-cell" title="{{ url.original_url }}">
+                <span style="color:var(--muted); font-size:.85rem;">{{ url.original_url|truncatechars:45 }}</span>
+            </td>
+            <td style="color:var(--muted); font-size:.85rem;">{{ url.title|default:"—" }}</td>
+            <td style="font-weight:600; color:var(--accent2);">{{ url.click_count }}</td>
+            <td>
+                {% if not url.is_active %}
+                    <span class="badge badge-red">Inactive</span>
+                {% elif url.is_expired %}
+                    <span class="badge badge-yellow">Expired</span>
+                {% else %}
+                    <span class="badge badge-green">Active</span>
+                {% endif %}
+            </td>
+            <td style="color:var(--muted); font-size:.82rem; white-space:nowrap;">{{ url.created_at|date:"M d, Y" }}</td>
+            <td>
+                <div style="display:flex; gap:6px;">
+                    <a href="{% url 'edit_url' url.pk %}" class="btn btn-secondary btn-sm">Edit</a>
+                    <a href="{% url 'delete_url' url.pk %}" class="btn btn-danger btn-sm">Del</a>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <div style="font-size:2.5rem; margin-bottom:1rem;">🔗</div>
+        <h3>No short URLs yet</h3>
+        <p style="margin-bottom:1.5rem;">Create your first short URL to get started.</p>
+        <a href="{% url 'create_url' %}" class="btn btn-primary">Create Short URL</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

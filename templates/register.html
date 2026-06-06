@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Register — Snip{% endblock %}
+{% block content %}
+<div class="container-sm" style="padding-top:3rem;">
+    <div class="card">
+        <h2 style="margin-bottom:1.5rem; font-size:1.3rem;">Create your account</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
+                {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:.5rem;">Create Account</button>
+        </form>
+        <p style="text-align:center; margin-top:1.2rem; color:var(--muted); font-size:.9rem;">
+            Already have an account? <a href="{% url 'login' %}">Sign in</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

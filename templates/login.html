@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Login — Snip{% endblock %}
+{% block content %}
+<div class="container-sm" style="padding-top:3rem;">
+    <div class="card">
+        <h2 style="margin-bottom:1.5rem; font-size:1.3rem;">Sign in to Snip</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; margin-top:.5rem;">Sign In</button>
+        </form>
+        <p style="text-align:center; margin-top:1.2rem; color:var(--muted); font-size:.9rem;">
+            No account yet? <a href="{% url 'register' %}">Sign up free</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

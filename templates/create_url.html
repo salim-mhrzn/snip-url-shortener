@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Create URL — Snip{% endblock %}
+{% block content %}
+<div style="max-width:600px; margin:0 auto;">
+    <div class="page-header">
+        <div class="page-title">Shorten a URL</div>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">← Back</a>
+    </div>
+    <div class="card">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Long URL *</label>
+                {{ form.original_url }}
+                {% if form.original_url.errors %}<ul class="errorlist">{% for e in form.original_url.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            <div class="form-group">
+                <label>Title (optional)</label>
+                {{ form.title }}
+            </div>
+            <div class="form-group">
+                <label>Custom Short Key (optional)</label>
+                {{ form.custom_key_input }}
+                <div class="helptext">Leave blank for auto-generated. Letters, numbers, and hyphens only.</div>
+                {% if form.custom_key_input.errors %}<ul class="errorlist">{% for e in form.custom_key_input.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            <div class="form-group">
+                <label>Expiration</label>
+                {{ form.expires_in }}
+            </div>
+            <div style="display:flex; gap:1rem; margin-top:1.5rem;">
+                <button type="submit" class="btn btn-primary">Create Short URL</button>
+                <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

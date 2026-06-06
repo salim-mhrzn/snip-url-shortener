@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Delete URL — Snip{% endblock %}
+{% block content %}
+<div style="max-width:480px; margin:3rem auto;">
+    <div class="card" style="text-align:center; padding:2.5rem;">
+        <div style="font-size:2.5rem; margin-bottom:1rem;">🗑️</div>
+        <h2 style="margin-bottom:.75rem;">Delete Short URL?</h2>
+        <p style="color:var(--muted); margin-bottom:.5rem;">This will permanently delete:</p>
+        <code style="background:var(--surface2); padding:6px 12px; border-radius:6px; color:var(--accent2);">{{ url.short_key }}</code>
+        <p style="color:var(--muted); font-size:.85rem; margin-top:1rem; margin-bottom:2rem;">All click data and analytics will be lost.</p>
+        <form method="post" style="display:flex; gap:1rem; justify-content:center;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes, Delete</button>
+            <a href="{% url 'url_detail' url.pk %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

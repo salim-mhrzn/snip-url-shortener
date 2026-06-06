@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}{{ url.short_key }} — Snip{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div class="page-title">URL Details</div>
+    <div style="display:flex; gap:.5rem;">
+        <a href="{% url 'edit_url' url.pk %}" class="btn btn-secondary">Edit</a>
+        <a href="{% url 'delete_url' url.pk %}" class="btn btn-danger">Delete</a>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary">← Dashboard</a>
+    </div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 220px; gap:1.5rem; align-items:start;">
+<div>
+    <div class="card" style="margin-bottom:1rem;">
+        <div style="margin-bottom:1.2rem;">
+            <div style="font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:.3rem;">Short URL</div>
+            <div style="display:flex; align-items:center; gap:.75rem; flex-wrap:wrap;">
+                <code style="font-size:1.1rem; color:var(--accent2); background:var(--surface2); padding:8px 14px; border-radius:8px; font-weight:700;">{{ short_url_full }}</code>
+                <button class="btn btn-secondary btn-sm copy-btn" onclick="copyText('{{ short_url_full }}', this)">Copy</button>
+                <a href="{{ short_url_full }}" target="_blank" class="btn btn-secondary btn-sm">Open ↗</a>
+            </div>
+        </div>
+        <div style="margin-bottom:1rem;">
+            <div style="font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:.3rem;">Original URL</div>
+            <div style="word-break:break-all; color:var(--text); font-size:.9rem;">{{ url.original_url }}</div>
+        </div>
+        {% if url.title %}
+        <div style="margin-bottom:1rem;">
+            <div style="font-size:.8rem; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-bottom:.3rem;">Title</div>
+            <div>{{ url.title }}</div>
+        </div>
+        {% endif %}
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:1rem; margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border);">
+            <div>
+                <div style="font-size:.78rem; color:var(--muted);">Status</div>
+                {% if not url.is_active %}<span class="badge badge-red">Inactive</span>
+                {% elif url.is_expired %}<span class="badge badge-yellow">Expired</span>
+                {% else %}<span class="badge badge-green">Active</span>{% endif %}
+            </div>
+            <div>
+                <div style="font-size:.78rem; color:var(--muted);">Created</div>
+                <div style="font-size:.9rem;">{{ url.created_at|date:"M d, Y" }}</div>
+            </div>
+            <div>
+                <div style="font-size:.78rem; color:var(--muted);">Expires</div>
+                <div style="font-size:.9rem;">{{ url.expires_at|date:"M d, Y H:i"|default:"Never" }}</div>
+            </div>
+            <div>
+                <div style="font-size:.78rem; color:var(--muted);">Key type</div>
+                <div>{% if url.custom_key %}<span class="badge badge-purple">Custom</span>{% else %}<span class="badge badge-green">Auto</span>{% endif %}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
+            <div style="font-weight:600;">Analytics</div>
+            <div style="font-size:1.5rem; font-weight:800; color:var(--accent2);">{{ url.click_count }} <span style="font-size:.9rem; color:var(--muted); font-weight:400;">total clicks</span></div>
+        </div>
+        {% if recent_clicks %}
+        <div style="font-size:.85rem; color:var(--muted); margin-bottom:.75rem;">Last 10 clicks</div>
+        <div style="overflow-x:auto;">
+        <table>
+            <thead><tr><th>Time</th><th>IP</th><th>Referer</th></tr></thead>
+            <tbody>
+            {% for click in recent_clicks %}
+            <tr>
+                <td style="font-size:.82rem; white-space:nowrap;">{{ click.clicked_at|date:"M d, H:i" }}</td>
+                <td style="font-size:.82rem; font-family:monospace;">{{ click.ip_address|default:"—" }}</td>
+                <td style="font-size:.82rem; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ click.referer|default:"Direct"|truncatechars:40 }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        {% else %}
+        <div class="empty-state" style="padding:2rem;">
+            <div style="color:var(--muted); font-size:.9rem;">No clicks recorded yet.</div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+</div>
+{% endblock %}
